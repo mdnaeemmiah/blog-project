@@ -1,5 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import { IUser } from './user.interface';
+import config from '../../config';
+import bcrypt from 'bcrypt';
 
 const UserSchema: Schema = new Schema<IUser>(
   {
@@ -39,5 +41,34 @@ const UserSchema: Schema = new Schema<IUser>(
   },
   { timestamps: true }
 );
+
+UserSchema.pre('save', async function (next) {
+   const user = this; 
+ 
+   user.password = await bcrypt.hash(
+    user.password,
+     Number(config.bcrypt_salt_rounds),
+   );
+ 
+   next();
+});
+
+// set '' after saving password
+UserSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
+
+// UserSchema.statics.isUserExistsByCustomId = async function (id: string) {
+//   return await User.findOne({ id }).select('+password');
+// };
+
+// UserSchema.statics.isPasswordMatched = async function (
+//   plainTextPassword,
+//   hashedPassword,
+// ) {
+//   return await bcrypt.compare(plainTextPassword, hashedPassword);
+// };
 
 export const User = mongoose.model<IUser>('User', UserSchema);

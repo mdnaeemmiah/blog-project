@@ -4,6 +4,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../utils/catchAsync';
 import { TUserRole } from '../module/user/user.interface';
 import { User } from '../module/user/user.model';
+import config from '../config';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -16,10 +17,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
     // checking if the given token is valid
     const decoded = jwt.verify(
       token,
-      "secret",
+      config.jwt_access_secret as string
     ) as JwtPayload;
 
-    console.log({decoded})
+    // console.log({decoded})
 
     const { role, email} = decoded;
 

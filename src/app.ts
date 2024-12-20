@@ -5,6 +5,7 @@ import globalErrorHandler from './app/middleware/globalErrorHandler';
 import notFound from './app/middleware/notFound';
 import cookieParser from 'cookie-parser';
 
+
 const app:Application = express()
 
 app.use(express.json())
