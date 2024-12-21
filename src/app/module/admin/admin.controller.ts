@@ -32,10 +32,6 @@ const deleteBlog = catchAsync(async (req, res) => {
 });
 
 
-
-
-
-
 export const AdminControllers = {
   deleteBlog,
   blockUser,

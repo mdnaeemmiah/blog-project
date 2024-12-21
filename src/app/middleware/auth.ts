@@ -9,39 +9,40 @@ import config from '../config';
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
+    // console.log(token);
     // checking if the token is missing
     if (!token) {
-      throw new Error( 'You are not authorized!');
+      throw new Error('You are not authorized!');
     }
+
+    const splitToken = token?.split(' ')[1];
 
     // checking if the given token is valid
     const decoded = jwt.verify(
-      token,
+      splitToken,
       config.jwt_access_secret as string
     ) as JwtPayload;
 
     // console.log({decoded})
 
-    const { role, email} = decoded;
+    const { role, email } = decoded;
 
     // checking if the user is exist
-  const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    throw new Error('This user is not found !')
-  }
+    if (!user) {
+      throw new Error('This user is not found !');
+    }
 
-  // checking if the user is inactive
-  const userStatus = user?.isBlocked
+    // checking if the user is inactive
+    const userStatus = user?.isBlocked;
 
-  if (userStatus) {
-    throw new Error('This user is blocked ! !')
-  }
+    if (userStatus) {
+      throw new Error('This user is blocked ! !');
+    }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new Error(
-        'You are not authorized',
-      );
+      throw new Error('You are not authorized');
     }
 
     req.user = decoded as JwtPayload;
