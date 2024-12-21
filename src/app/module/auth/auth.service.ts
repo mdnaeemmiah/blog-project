@@ -11,7 +11,7 @@ const register = async (payload: IUser) => {
 
 const login = async (payload: { email: string; password: string }) => {
   // checking if the user is exist
-  const user = await User.findOne({ email: payload?.email }).select('+password');
+  const user = await User.findOne({ email: payload?.email}).select('+password');
 
   if (!user) {
     throw new Error('This user is not found !')
@@ -31,7 +31,7 @@ const login = async (payload: { email: string; password: string }) => {
   )
 
   if (!isPasswordMatched) {
-    throw new Error('Wrong Password!!! Tell me who are you? 😈')
+    throw new Error('Wrong Password!!! Tell me who are you? 35')
   }
 
   //create token and sent to the  client

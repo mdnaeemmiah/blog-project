@@ -1,6 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import config from '../../config';
-import bcrypt from 'bcrypt';
 import { IAdmin } from './admin.interface';
 
 const AdminSchema: Schema = new Schema<IAdmin>(
@@ -32,21 +30,5 @@ const AdminSchema: Schema = new Schema<IAdmin>(
   { timestamps: true }
 );
 
-AdminSchema.pre('save', async function (next) {
-   const user = this; 
- 
-   user.password = await bcrypt.hash(
-    user.password,
-     Number(config.bcrypt_salt_rounds),
-   );
- 
-   next();
-});
-
-// set '' after saving password
-AdminSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
 
 export const Admin = mongoose.model<IAdmin>('Admin', AdminSchema);

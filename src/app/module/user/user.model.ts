@@ -2,8 +2,9 @@ import mongoose, { Schema } from 'mongoose';
 import { IUser } from './user.interface';
 import config from '../../config';
 import bcrypt from 'bcrypt';
+import { model } from 'mongoose';
 
-const UserSchema: Schema = new Schema<IUser>(
+const UserSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -26,7 +27,7 @@ const UserSchema: Schema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      select: false,
+      select: 0,
     },
     role: {
       type: String,
@@ -42,15 +43,18 @@ const UserSchema: Schema = new Schema<IUser>(
   { timestamps: true }
 );
 
+
 UserSchema.pre('save', async function (next) {
-   const user = this; 
- 
-   user.password = await bcrypt.hash(
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this; // doc
+  // hashing password and save into DB
+
+  user.password = await bcrypt.hash(
     user.password,
-     Number(config.bcrypt_salt_rounds),
-   );
- 
-   next();
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  next();
 });
 
 // set '' after saving password
@@ -60,15 +64,4 @@ UserSchema.post('save', function (doc, next) {
 });
 
 
-// UserSchema.statics.isUserExistsByCustomId = async function (id: string) {
-//   return await User.findOne({ id }).select('+password');
-// };
-
-// UserSchema.statics.isPasswordMatched = async function (
-//   plainTextPassword,
-//   hashedPassword,
-// ) {
-//   return await bcrypt.compare(plainTextPassword, hashedPassword);
-// };
-
-export const User = mongoose.model<IUser>('User', UserSchema);
+export const User = model<IUser>('User', UserSchema);

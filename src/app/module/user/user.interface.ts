@@ -1,4 +1,5 @@
-import { Model } from "mongoose";
+
+
 import { USER_ROLE } from "./user.contant";
 
 export interface IUser {
