@@ -7,9 +7,9 @@ import { userController } from './user.controller'
 
 const userRouter = Router()
 
-userRouter.post('/admin',  validateRequest(UserValidation.UserValidationSchema), userController.createAdmin)
+userRouter.post('/admin',   userController.createAdmin)
 userRouter.get('/:userId', userController.getSingleUser)
-userRouter.put('/:userId', userController.updateUser)
+userRouter.patch('/:userId', userController.updateUser)
 userRouter.delete('/:userId', userController.deleteUser)
 userRouter.get('/',userController.getUser)
 
